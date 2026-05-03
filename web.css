@@ -1,0 +1,1710 @@
+:root {
+
+  /* ── Colour Palette ── */
+  --bg:         #07070e;           /* Page background — deepest dark          */
+  --surface:    #0f0f1a;           /* Cards, sections — one step lighter      */
+  --surface2:   #161626;           /* Inputs, hover states — two steps        */
+  --surface3:   #1c1c30;           /* Deepest surface for layering            */
+
+  --orange:     #ff4800;           /* Primary accent — electric orange        */
+  --orange-dim: rgba(255,72,0,.15);/* Faint orange for backgrounds            */
+  --orange-mid: rgba(255,72,0,.35);/* Medium orange for glows                 */
+
+  --blue:       #00c8ff;           /* Secondary accent — electric cyan-blue   */
+  --blue-dim:   rgba(0,200,255,.1);/* Faint blue for backgrounds              */
+
+  --white:      #f2f2f2;           /* Body text                               */
+  --white-dim:  rgba(242,242,242,.7); /* Muted body text                      */
+  --muted:      #4a4a60;           /* Placeholder / secondary text            */
+
+  /* ── Borders ── */
+  --border:     rgba(255,72,0,.18);   /* Orange-tinted border                 */
+  --border2:    rgba(0,200,255,.12);  /* Blue-tinted border                   */
+  --border3:    rgba(255,255,255,.05);/* Subtle white border                  */
+
+  /* ── Typography ── */
+  --font-d: 'Barlow Condensed', sans-serif;  /* Display / headings            */
+  --font-b: 'IBM Plex Mono',    monospace;   /* Body / UI / code              */
+
+  /* ── Shadows & Glows ── */
+  --glow-o: 0 0 40px rgba(255,72,0,.35);      /* Orange glow                 */
+  --glow-b: 0 0 40px rgba(0,200,255,.25);     /* Blue glow                   */
+  --glow-o-sm: 0 0 18px rgba(255,72,0,.25);   /* Smaller orange glow         */
+
+  /* ── Spacing ── */
+  --section-pad: 100px 5vw;
+  --section-pad-sm: 72px 4vw;
+
+  /* ── Transitions ── */
+  --ease:   cubic-bezier(.25,.46,.45,.94);
+  --ease-b: cubic-bezier(.34,1.56,.64,1);   /* Bouncy                        */
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. RESET & BASE STYLES
+═══════════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin:     0;
+  padding:    0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size:       14px;        /* 1rem = 14px across the site               */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background:    var(--bg);
+  color:         var(--white);
+  font-family:   var(--font-b);
+  line-height:   1.6;
+  overflow-x:    hidden;
+  cursor:        none;          /* Replaced by custom cursor                 */
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  max-width: 100%;
+  display:   block;
+}
+
+a {
+  text-decoration: none;
+  color:           inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-b);
+}
+
+/* Remove default list bullets */
+ul,
+ol {
+  list-style: none;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. CUSTOM CURSOR
+═══════════════════════════════════════════════════════════════════ */
+
+/* Inner dot — follows mouse precisely */
+#cur {
+  width:           10px;
+  height:          10px;
+  background:      var(--orange);
+  border-radius:   50%;
+  position:        fixed;
+  pointer-events:  none;
+  z-index:         9999;
+  transform:       translate(-50%, -50%);
+  transition:      width .15s, height .15s, background .2s;
+  mix-blend-mode:  difference;
+}
+
+/* Outer ring — lags slightly for smooth feel */
+#cur-r {
+  width:           32px;
+  height:          32px;
+  border:          1px solid var(--orange);
+  border-radius:   50%;
+  position:        fixed;
+  pointer-events:  none;
+  z-index:         9998;
+  transform:       translate(-50%, -50%);
+  transition:      all .12s ease;
+  opacity:         .5;
+}
+
+/* Expand cursor on interactive elements */
+a:hover    ~ #cur,
+button:hover ~ #cur { width: 20px; height: 20px; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. NOISE / GRAIN OVERLAY
+   Adds subtle film-grain texture over the whole page.
+═══════════════════════════════════════════════════════════════════ */
+body::after {
+  content: '';
+  position:         fixed;
+  inset:            0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events:   none;
+  z-index:          200;
+  opacity:          .45;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. CUSTOM SCROLLBAR
+═══════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background:    var(--orange);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. NAVIGATION
+═══════════════════════════════════════════════════════════════════ */
+nav {
+  position:         fixed;
+  top:    0;
+  left:   0;
+  right:  0;
+  z-index:          500;
+  display:          flex;
+  align-items:      center;
+  justify-content:  space-between;
+  padding:          0 5vw;
+  height:           72px;
+  background:       rgba(7,7,14,.92);
+  backdrop-filter:  blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom:    1px solid var(--border);
+  transition:       height .3s var(--ease);
+}
+
+/* Shrinks slightly after scrolling */
+nav.scrolled {
+  height: 56px;
+}
+
+/* Logo */
+.nav-logo {
+  font-family:     var(--font-d);
+  font-size:       1.9rem;
+  font-weight:     900;
+  letter-spacing:  4px;
+  color:           var(--white);
+  transition:      opacity .2s;
+}
+.nav-logo:hover  { opacity: .85; }
+.nav-logo span   { color: var(--orange); }
+
+/* Nav links list */
+.nav-links {
+  display: flex;
+  gap:     36px;
+}
+
+.nav-links a {
+  font-size:       11px;
+  letter-spacing:  3px;
+  text-transform:  uppercase;
+  color:           var(--muted);
+  transition:      color .25s;
+  position:        relative;
+  padding-bottom:  4px;
+}
+
+/* Underline reveal on hover */
+.nav-links a::after {
+  content:          '';
+  position:         absolute;
+  bottom:           -4px;
+  left:             0;
+  width:            0;
+  height:           1px;
+  background:       var(--orange);
+  transition:       width .3s var(--ease);
+}
+.nav-links a:hover          { color: var(--white); }
+.nav-links a:hover::after   { width: 100%; }
+
+/* Book Now CTA button in nav */
+.nav-book {
+  background:      var(--orange) !important;
+  color:           #000 !important;
+  padding:         10px 22px;
+  font-weight:     700;
+  letter-spacing:  2px !important;
+  font-size:       10px !important;
+  transition:      background .3s !important;
+}
+.nav-book:hover  { background: var(--blue) !important; }
+.nav-book::after { display: none !important; }
+
+/* Hamburger — hidden on desktop */
+.hamburger {
+  display:     none;
+  background:  none;
+  border:      none;
+  color:       var(--white);
+  font-size:   22px;
+  cursor:      pointer;
+  line-height: 1;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. MOBILE FULL-SCREEN MENU
+═══════════════════════════════════════════════════════════════════ */
+.mobile-menu {
+  display:         none;            /* JS adds .open to show it               */
+  position:        fixed;
+  inset:           0;
+  z-index:         490;
+  background:      rgba(7,7,14,.97);
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             32px;
+}
+.mobile-menu.open { display: flex; }
+
+.mobile-menu a {
+  font-family:    var(--font-d);
+  font-size:      2.5rem;
+  font-weight:    900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color:          var(--muted);
+  transition:     color .2s, letter-spacing .2s;
+}
+.mobile-menu a:hover {
+  color:           var(--orange);
+  letter-spacing:  5px;
+}
+
+.mob-close {
+  position:   absolute;
+  top:        28px;
+  right:      28px;
+  background: none;
+  border:     none;
+  color:      var(--muted);
+  font-size:  24px;
+  cursor:     pointer;
+  transition: color .2s;
+  line-height: 1;
+}
+.mob-close:hover { color: var(--orange); }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. HERO SECTION
+═══════════════════════════════════════════════════════════════════ */
+#hero {
+  min-height:      100vh;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  position:        relative;
+  overflow:        hidden;
+  padding:         120px 5vw 80px;
+  text-align:      center;
+}
+
+/* ── 8a. Hero Grid Background ── */
+.hero-grid {
+  position:         absolute;
+  inset:            0;
+  pointer-events:   none;
+  background-image:
+    linear-gradient(rgba(255,72,0,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,72,0,.06) 1px, transparent 1px);
+  background-size:  60px 60px;
+  animation:        gridPan 20s linear infinite;
+}
+
+/* ── 8b. Ambient Orbs ── */
+.orb {
+  position:        absolute;
+  border-radius:   50%;
+  filter:          blur(80px);
+  pointer-events:  none;
+  animation:       orbFloat 8s ease-in-out infinite;
+}
+.orb1 {
+  width:  500px; height: 500px;
+  background: rgba(255,72,0,.12);
+  top: -100px; right: -100px;
+  animation-delay: 0s;
+}
+.orb2 {
+  width:  400px; height: 400px;
+  background: rgba(0,200,255,.08);
+  bottom: -50px; left: -80px;
+  animation-delay: 3s;
+}
+.orb3 {
+  width:  300px; height: 300px;
+  background: rgba(255,72,0,.07);
+  bottom: 20%; right: 10%;
+  animation-delay: 5s;
+}
+
+/* ── 8c. Vinyl Disc ── */
+.vinyl-wrap {
+  position:      relative;
+  margin-bottom: 40px;
+}
+
+.vinyl {
+  width:  200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    #000   0%,  #000   12%,
+    #111   13%, #1a1a1a 25%, #0d0d0d 26%,
+    #1a1a1a 40%, #0d0d0d 41%,
+    #1a1a1a 55%, #111   56%,
+    #0d0d0d 70%, #222   100%
+  );
+  border:         3px solid var(--orange);
+  animation:      vinylSpin 6s linear infinite;
+  box-shadow:     var(--glow-o), 0 0 80px rgba(255,72,0,.15);
+  position:       relative;
+}
+
+/* Centre spindle hole */
+.vinyl::before {
+  content:   '';
+  position:  absolute;
+  top:  50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width:  28px; height: 28px;
+  border-radius: 50%;
+  background:    var(--bg);
+  border:        2px solid var(--orange);
+}
+
+/* Label text on disc */
+.vinyl::after {
+  content:     'EDD254';
+  position:    absolute;
+  top:  50%; left: 50%;
+  transform:   translate(-50%, -50%);
+  font-family: var(--font-d);
+  font-size:   .5rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color:          var(--orange);
+  white-space:    nowrap;
+  margin-top:     22px;
+  animation:      vinylSpin 6s linear infinite reverse;
+}
+
+/* ── 8d. Hero Typography ── */
+.hero-tag {
+  font-size:       11px;
+  letter-spacing:  6px;
+  color:           var(--orange);
+  text-transform:  uppercase;
+  margin-bottom:   16px;
+  opacity:         0;
+  animation:       fadeUp .8s forwards .3s;
+}
+
+.hero-name {
+  font-family:     var(--font-d);
+  font-size:       clamp(4.5rem, 14vw, 11rem);
+  font-weight:     900;
+  line-height:     .9;
+  letter-spacing:  2px;
+  opacity:         0;
+  animation:       fadeUp .8s forwards .5s;
+}
+.hero-name .line2 {
+  color:   var(--orange);
+  display: block;
+}
+
+.hero-sub {
+  font-size:       clamp(.75rem, 1.5vw, .95rem);
+  color:           var(--muted);
+  letter-spacing:  3px;
+  margin-top:      20px;
+  opacity:         0;
+  animation:       fadeUp .8s forwards .7s;
+}
+
+/* ── 8e. Hero Buttons ── */
+.hero-btns {
+  display:         flex;
+  gap:             14px;
+  margin-top:      44px;
+  justify-content: center;
+  flex-wrap:       wrap;
+  opacity:         0;
+  animation:       fadeUp .8s forwards .9s;
+}
+
+.btn-primary {
+  background:     var(--orange);
+  color:          #000;
+  border:         none;
+  padding:        16px 38px;
+  font-family:    var(--font-b);
+  font-weight:    500;
+  font-size:      11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor:         pointer;
+  transition:     all .3s var(--ease);
+  display:        inline-block;
+}
+.btn-primary:hover {
+  background:  var(--white);
+  transform:   translateY(-2px);
+  box-shadow:  var(--glow-o-sm);
+}
+
+.btn-outline {
+  background:      transparent;
+  color:           var(--white);
+  border:          1px solid rgba(255,255,255,.2);
+  padding:         16px 38px;
+  font-family:     var(--font-b);
+  font-size:       11px;
+  letter-spacing:  3px;
+  text-transform:  uppercase;
+  cursor:          pointer;
+  transition:      all .3s var(--ease);
+  display:         inline-block;
+}
+.btn-outline:hover {
+  border-color: var(--blue);
+  color:        var(--blue);
+  box-shadow:   var(--glow-b);
+}
+
+/* ── 8f. Hero Stats Bar ── */
+.hero-stats {
+  display:         flex;
+  gap:             48px;
+  margin-top:      72px;
+  justify-content: center;
+  flex-wrap:       wrap;
+  opacity:         0;
+  animation:       fadeUp .8s forwards 1.1s;
+}
+
+.stat           { text-align: center; }
+.stat-n {
+  font-family:    var(--font-d);
+  font-size:      2.8rem;
+  font-weight:    900;
+  color:          var(--orange);
+  line-height:    1;
+}
+.stat-l {
+  font-size:       9px;
+  letter-spacing:  3px;
+  color:           var(--muted);
+  text-transform:  uppercase;
+  margin-top:      4px;
+}
+
+/* ── 8g. Scroll Cue ── */
+.scroll-cue {
+  position:   absolute;
+  bottom:     32px;
+  left:       50%;
+  transform:  translateX(-50%);
+  display:    flex;
+  flex-direction: column;
+  align-items: center;
+  gap:        8px;
+  opacity:    .4;
+  animation:  fadeUp .8s forwards 1.4s, bobble 2s infinite 2.5s;
+}
+.scroll-cue span {
+  font-size:       9px;
+  letter-spacing:  4px;
+  text-transform:  uppercase;
+}
+.scroll-line {
+  width:      1px;
+  height:     48px;
+  background: linear-gradient(to bottom, var(--orange), transparent);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. SHARED SECTION STYLES
+═══════════════════════════════════════════════════════════════════ */
+section {
+  padding: var(--section-pad);
+}
+
+/* Section eyebrow label  e.g. "Who Am I" */
+.sec-label {
+  display:        flex;
+  align-items:    center;
+  gap:            12px;
+  font-size:      10px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color:          var(--orange);
+  margin-bottom:  14px;
+}
+.sec-label::before {
+  content:    '';
+  width:      28px;
+  height:     1px;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+
+/* Section heading */
+.sec-title {
+  font-family:    var(--font-d);
+  font-size:      clamp(2.4rem, 6vw, 5rem);
+  font-weight:    900;
+  line-height:    .95;
+  letter-spacing: 1px;
+  margin-bottom:  16px;
+}
+.sec-title em {
+  font-style: normal;
+  color:      var(--orange);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   10. SCROLL REVEAL ANIMATION
+   Add class "reveal" to any element; JS adds "visible" on scroll.
+═══════════════════════════════════════════════════════════════════ */
+.reveal {
+  opacity:    0;
+  transform:  translateY(40px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.reveal.visible {
+  opacity:   1;
+  transform: translateY(0);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   11. ABOUT SECTION
+═══════════════════════════════════════════════════════════════════ */
+#about {
+  background: var(--surface);
+}
+
+.about-grid {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   80px;
+  align-items:           center;
+}
+
+/* ── 11a. Photo Upload Frame ── */
+.photo-frame {
+  position: relative;
+}
+
+.photo-box {
+  width:           100%;
+  aspect-ratio:    3 / 4;
+  background:      var(--surface2);
+  border:          1px solid var(--border);
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             14px;
+  color:           var(--muted);
+  font-size:       11px;
+  letter-spacing:  2px;
+  position:        relative;
+  overflow:        hidden;
+  cursor:          pointer;
+  transition:      border-color .3s;
+}
+.photo-box:hover          { border-color: rgba(255,72,0,.5); }
+.photo-box input          { display: none; }
+
+/* Uploaded image fills the box */
+.photo-box img.uploaded {
+  position:    absolute;
+  inset:       0;
+  width:       100%;
+  height:      100%;
+  object-fit:  cover;
+}
+
+.photo-upload-icon { font-size: 2.5rem; opacity: .3; }
+.photo-box .upload-hint {
+  font-size:       10px;
+  text-align:      center;
+  color:           var(--muted);
+}
+
+.photo-btn {
+  background:      transparent;
+  border:          1px dashed var(--orange);
+  color:           var(--orange);
+  padding:         8px 18px;
+  font-family:     var(--font-b);
+  font-size:       10px;
+  letter-spacing:  2px;
+  cursor:          pointer;
+  transition:      background .3s;
+  margin-top:      6px;
+}
+.photo-btn:hover { background: rgba(255,72,0,.12); }
+
+/* Blue corner accents on the photo frame */
+.corner           { position: absolute; width: 18px; height: 18px; }
+.corner.tl        { top: -1px; left: -1px;   border-top:    2px solid var(--blue); border-left:   2px solid var(--blue); }
+.corner.br        { bottom: -1px; right: -1px; border-bottom: 2px solid var(--blue); border-right:  2px solid var(--blue); }
+
+/* About body text */
+.about-text {
+  font-size:    13px;
+  color:        var(--white-dim);
+  line-height:  2;
+  margin-bottom: 16px;
+}
+
+/* ── 11b. Genre Pills ── */
+.genres {
+  display:     flex;
+  flex-wrap:   wrap;
+  gap:         8px;
+  margin:      24px 0 32px;
+}
+
+.genre-pill {
+  border:          1px solid var(--border);
+  padding:         6px 16px;
+  font-size:       10px;
+  letter-spacing:  2px;
+  color:           var(--muted);
+  text-transform:  uppercase;
+  transition:      all .3s;
+  cursor:          default;
+}
+.genre-pill:hover {
+  border-color: var(--orange);
+  color:        var(--orange);
+}
+
+/* ── 11c. About Stats ── */
+.about-stats {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   1px;
+  background:            var(--border);
+  margin-top:            32px;
+}
+
+.a-stat {
+  background: var(--bg);
+  padding:    22px 20px;
+}
+.a-stat .n {
+  font-family:  var(--font-d);
+  font-size:    2.4rem;
+  font-weight:  900;
+  color:        var(--orange);
+  line-height:  1;
+}
+.a-stat .l {
+  font-size:       9px;
+  letter-spacing:  2px;
+  color:           var(--muted);
+  text-transform:  uppercase;
+  margin-top:      4px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   12. AUDIO PLAYER SECTION
+═══════════════════════════════════════════════════════════════════ */
+#audio { /* inherits section padding */ }
+
+.audio-header {
+  display:         flex;
+  align-items:     flex-start;
+  justify-content: space-between;
+  margin-bottom:   48px;
+  gap:             24px;
+  flex-wrap:       wrap;
+}
+
+/* ── 12a. Upload Drop Zone ── */
+.upload-zone {
+  border:      1px dashed var(--orange);
+  padding:     28px 32px;
+  text-align:  center;
+  cursor:      pointer;
+  transition:  all .3s;
+  background:  rgba(255,72,0,.03);
+  flex-shrink: 0;
+  min-width:   220px;
+}
+.upload-zone:hover,
+.upload-zone.drag {
+  background:   rgba(255,72,0,.08);
+  border-color: rgba(255,72,0,.7);
+}
+.upload-zone input { display: none; }
+
+.uz-icon  { font-size: 2rem; margin-bottom: 8px; opacity: .6; }
+.uz-label { font-size: 10px; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; }
+.uz-sub   { font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+/* ── 12b. Now Playing Card ── */
+.now-playing {
+  background:    var(--surface2);
+  border:        1px solid var(--border);
+  padding:       28px 32px;
+  margin-bottom: 4px;
+}
+
+.np-label {
+  font-size:       9px;
+  letter-spacing:  4px;
+  color:           var(--orange);
+  text-transform:  uppercase;
+  margin-bottom:   16px;
+  display:         flex;
+  align-items:     center;
+  gap:             8px;
+}
+
+/* Pulsing live dot next to "Now Playing" */
+.np-label::after {
+  content:       '';
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+  background:    var(--orange);
+  animation:     pulse 1.5s infinite;
+}
+
+.np-title {
+  font-family:     var(--font-d);
+  font-size:       2rem;
+  font-weight:     700;
+  letter-spacing:  2px;
+  margin-bottom:   4px;
+  white-space:     nowrap;
+  overflow:        hidden;
+  text-overflow:   ellipsis;
+}
+
+.np-artist {
+  font-size:    11px;
+  color:        var(--muted);
+  margin-bottom: 20px;
+}
+
+/* ── 12c. Progress Bar ── */
+.progress-wrap {
+  position:      relative;
+  margin-bottom: 12px;
+  cursor:        pointer;
+}
+
+.progress-bg {
+  height:        4px;
+  background:    var(--surface);
+  border-radius: 2px;
+}
+
+.progress-fill {
+  height:        4px;
+  background:    linear-gradient(to right, var(--orange), var(--blue));
+  border-radius: 2px;
+  width:         0%;
+  transition:    width .1s linear;
+}
+
+/* Draggable thumb */
+.progress-thumb {
+  position:      absolute;
+  top:           50%;
+  right:         0;
+  transform:     translate(50%, -50%);
+  width:         14px;
+  height:        14px;
+  border-radius: 50%;
+  background:    var(--orange);
+  border:        2px solid var(--bg);
+  box-shadow:    var(--glow-o);
+  opacity:       0;
+  transition:    opacity .2s;
+}
+.progress-wrap:hover .progress-thumb { opacity: 1; }
+
+.progress-times {
+  display:         flex;
+  justify-content: space-between;
+  font-size:       10px;
+  color:           var(--muted);
+}
+
+/* ── 12d. Player Controls ── */
+.controls {
+  display:     flex;
+  align-items: center;
+  gap:         16px;
+  margin-top:  16px;
+  flex-wrap:   wrap;
+}
+
+.ctrl-btn {
+  width:           36px;
+  height:          36px;
+  border-radius:   50%;
+  border:          1px solid var(--border);
+  background:      none;
+  color:           var(--muted);
+  cursor:          pointer;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       13px;
+  transition:      all .2s;
+}
+.ctrl-btn:hover {
+  border-color: var(--orange);
+  color:        var(--orange);
+}
+
+.ctrl-play {
+  width:           52px;
+  height:          52px;
+  border-radius:   50%;
+  background:      var(--orange);
+  border:          none;
+  color:           #000;
+  cursor:          pointer;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       18px;
+  transition:      all .2s;
+  box-shadow:      var(--glow-o);
+}
+.ctrl-play:hover {
+  background: var(--white);
+  transform:  scale(1.05);
+}
+
+/* ── 12e. Volume Slider ── */
+.vol-wrap {
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+  margin-left: auto;
+}
+.vol-icon    { font-size: 13px; color: var(--muted); }
+
+.vol-slider {
+  -webkit-appearance: none;
+  width:              90px;
+  height:             3px;
+  background:         var(--surface);
+  border-radius:      2px;
+  outline:            none;
+  cursor:             pointer;
+}
+.vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width:              12px;
+  height:             12px;
+  border-radius:      50%;
+  background:         var(--orange);
+  cursor:             pointer;
+}
+.vol-slider::-moz-range-thumb {
+  width:         12px;
+  height:        12px;
+  border-radius: 50%;
+  background:    var(--orange);
+  cursor:        pointer;
+  border:        none;
+}
+
+/* ── 12f. Track List ── */
+.track-list { margin-top: 24px; }
+
+.track-item {
+  display:    flex;
+  align-items: center;
+  gap:        16px;
+  padding:    14px 16px;
+  background: var(--surface);
+  border:     1px solid rgba(255,255,255,.04);
+  margin-bottom: 3px;
+  cursor:     pointer;
+  transition: all .2s;
+  position:   relative;
+  overflow:   hidden;
+}
+
+/* Left orange accent bar (hidden by default) */
+.track-item::before {
+  content:          '';
+  position:         absolute;
+  left:   0; top: 0; bottom: 0;
+  width:            2px;
+  background:       var(--orange);
+  transform:        scaleY(0);
+  transform-origin: bottom;
+  transition:       transform .3s;
+}
+.track-item:hover,
+.track-item.playing           { background: var(--surface2); }
+.track-item.playing::before,
+.track-item:hover::before     { transform: scaleY(1); }
+
+.track-num {
+  font-family: var(--font-d);
+  font-size:   1.4rem;
+  font-weight: 700;
+  color:       rgba(255,72,0,.2);
+  width:       32px;
+  flex-shrink: 0;
+}
+.track-item.playing .track-num { color: var(--orange); }
+
+.track-info    { flex: 1; min-width: 0; }
+.track-title-t {
+  font-size:     13px;
+  font-weight:   500;
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+}
+.track-meta    { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.track-dur     { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+
+.track-play-icon {
+  width:           30px;
+  height:          30px;
+  border-radius:   50%;
+  border:          1px solid var(--border);
+  background:      none;
+  color:           var(--muted);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       11px;
+  cursor:          pointer;
+  transition:      all .2s;
+  flex-shrink:     0;
+}
+.track-play-icon:hover              { border-color: var(--orange); color: var(--orange); }
+.track-item.playing .track-play-icon { border-color: var(--orange); color: var(--orange); }
+
+.track-del {
+  background:  none;
+  border:      none;
+  color:       var(--muted);
+  font-size:   14px;
+  cursor:      pointer;
+  padding:     4px 8px;
+  transition:  color .2s;
+  flex-shrink: 0;
+}
+.track-del:hover { color: var(--orange); }
+
+/* ── 12g. Waveform Bars ── */
+.wv {
+  display:     flex;
+  align-items: center;
+  gap:         2px;
+  height:      24px;
+  flex-shrink: 0;
+}
+
+.wv-b {
+  width:         3px;
+  background:    var(--muted);
+  border-radius: 1px;
+  transition:    background .3s;
+}
+
+/* Animated when track is playing */
+.track-item.playing .wv-b {
+  background: var(--orange);
+  animation:  wvAnim .6s ease-in-out infinite alternate;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   13. VIDEO GALLERY SECTION
+═══════════════════════════════════════════════════════════════════ */
+#video { background: var(--surface); }
+
+.video-header {
+  display:         flex;
+  align-items:     flex-start;
+  justify-content: space-between;
+  margin-bottom:   48px;
+  gap:             24px;
+  flex-wrap:       wrap;
+}
+
+/* ── 13a. Video Upload Zone ── */
+.video-upload-zone {
+  border:      1px dashed var(--blue);
+  padding:     28px 32px;
+  text-align:  center;
+  cursor:      pointer;
+  background:  rgba(0,200,255,.03);
+  transition:  all .3s;
+  flex-shrink: 0;
+  min-width:   220px;
+}
+.video-upload-zone:hover,
+.video-upload-zone.drag {
+  background:   rgba(0,200,255,.08);
+  border-color: rgba(0,200,255,.7);
+}
+.video-upload-zone input { display: none; }
+
+.vuz-icon  { font-size: 2rem; margin-bottom: 8px; opacity: .6; color: var(--blue); }
+.vuz-label { font-size: 10px; letter-spacing: 2px; color: var(--blue); text-transform: uppercase; }
+.vuz-sub   { font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+/* ── 13b. Video Grid & Cards ── */
+.video-grid {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap:                   4px;
+}
+
+.video-card {
+  background:    var(--surface2);
+  position:      relative;
+  overflow:      hidden;
+  border:        1px solid rgba(255,255,255,.04);
+  cursor:        pointer;
+  transition:    border-color .3s;
+}
+.video-card:hover { border-color: var(--blue); }
+
+.video-card video {
+  width:       100%;
+  aspect-ratio: 16 / 9;
+  object-fit:  cover;
+  display:     block;
+}
+
+/* Dark gradient overlay at bottom */
+.video-card-overlay {
+  position:        absolute;
+  inset:           0;
+  background:      linear-gradient(to top, rgba(0,0,0,.8) 0%, transparent 50%);
+  display:         flex;
+  flex-direction:  column;
+  justify-content: flex-end;
+  padding:         16px;
+  pointer-events:  none;
+}
+.video-card:hover .video-card-overlay { pointer-events: auto; }
+
+.vid-title {
+  font-family:    var(--font-d);
+  font-size:      1.1rem;
+  font-weight:    700;
+  letter-spacing: 1px;
+  margin-bottom:  4px;
+}
+.vid-meta { font-size: 10px; color: rgba(255,255,255,.5); }
+
+/* Central play button (hidden until hover) */
+.vid-play-btn {
+  position:        absolute;
+  top:  50%; left: 50%;
+  transform:       translate(-50%, -50%);
+  width:           56px;
+  height:          56px;
+  border-radius:   50%;
+  background:      rgba(0,200,255,.2);
+  border:          2px solid var(--blue);
+  color:           var(--blue);
+  font-size:       20px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  cursor:          pointer;
+  transition:      all .3s;
+  pointer-events:  auto;
+  opacity:         0;
+}
+.video-card:hover .vid-play-btn {
+  opacity:    1;
+  transform:  translate(-50%, -50%) scale(1.05);
+  box-shadow: var(--glow-b);
+}
+
+/* Delete button top-right (hidden until hover) */
+.vid-del {
+  position:    absolute;
+  top:         10px;
+  right:       10px;
+  background:  rgba(0,0,0,.7);
+  border:      1px solid rgba(255,72,0,.3);
+  color:       var(--muted);
+  padding:     4px 10px;
+  font-family: var(--font-b);
+  font-size:   10px;
+  cursor:      pointer;
+  transition:  all .2s;
+  opacity:     0;
+}
+.video-card:hover .vid-del { opacity: 1; }
+.vid-del:hover              { background: var(--orange); color: #000; }
+
+/* ── 13c. Video Lightbox ── */
+.lightbox {
+  display:          none;
+  position:         fixed;
+  inset:            0;
+  background:       rgba(0,0,0,.96);
+  z-index:          800;
+  align-items:      center;
+  justify-content:  center;
+  backdrop-filter:  blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.lightbox.open        { display: flex; }
+.lightbox-inner       { position: relative; max-width: 90vw; max-height: 85vh; }
+.lightbox video       { max-width: 90vw; max-height: 80vh; }
+
+.lightbox-close {
+  position:   absolute;
+  top:        -44px;
+  right:      0;
+  background: none;
+  border:     none;
+  color:      var(--muted);
+  font-size:  24px;
+  cursor:     pointer;
+  transition: color .2s;
+  line-height: 1;
+}
+.lightbox-close:hover { color: var(--orange); }
+
+/* ── 13d. Empty State ── */
+.empty-state {
+  text-align:      center;
+  padding:         60px;
+  color:           var(--muted);
+  border:          1px dashed rgba(255,255,255,.06);
+  font-size:       12px;
+  letter-spacing:  2px;
+}
+.empty-state .es-icon { font-size: 3rem; margin-bottom: 16px; opacity: .3; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   14. EVENTS SECTION
+═══════════════════════════════════════════════════════════════════ */
+#events { /* inherits section padding */ }
+
+.events-list {
+  border-top:  1px solid var(--border);
+  margin-top:  48px;
+}
+
+.event-row {
+  display:               grid;
+  grid-template-columns: 80px 1fr 1fr auto;
+  align-items:           center;
+  gap:                   32px;
+  padding:               28px 0;
+  border-bottom:         1px solid rgba(255,255,255,.04);
+  position:              relative;
+  transition:            padding .3s;
+}
+
+/* Full-row hover highlight via pseudo-element */
+.event-row::after {
+  content:    '';
+  position:   absolute;
+  left:  -5vw; right: -5vw;
+  top:   0;    bottom: 0;
+  background: var(--surface);
+  opacity:    0;
+  transition: opacity .3s;
+  z-index:    -1;
+}
+.event-row:hover::after   { opacity: 1; }
+.event-row:hover          { padding-left: 20px; }
+
+.ev-date   { text-align: center; }
+.ev-day    { font-family: var(--font-d); font-size: 2.5rem; font-weight: 900; color: var(--orange); line-height: 1; }
+.ev-month  { font-size: 9px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+.ev-name   { font-family: var(--font-d); font-size: 1.4rem; font-weight: 700; letter-spacing: 2px; }
+.ev-venue  { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.ev-city   { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+
+.ev-ticket {
+  background:      transparent;
+  border:          1px solid var(--orange);
+  color:           var(--orange);
+  padding:         10px 22px;
+  font-family:     var(--font-b);
+  font-size:       10px;
+  letter-spacing:  2px;
+  text-transform:  uppercase;
+  cursor:          pointer;
+  transition:      all .3s;
+  white-space:     nowrap;
+}
+.ev-ticket:hover { background: var(--orange); color: #000; }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   15. BOOKING / CONTACT SECTION
+═══════════════════════════════════════════════════════════════════ */
+#booking {
+  background: var(--surface);
+  position:   relative;
+  overflow:   hidden;
+}
+
+/* Giant ghost text behind the form */
+#booking::before {
+  content:         'BOOK';
+  font-family:     var(--font-d);
+  font-size:       28vw;
+  font-weight:     900;
+  color:           rgba(255,72,0,.025);
+  position:        absolute;
+  top:  50%; left: 50%;
+  transform:       translate(-50%, -50%);
+  white-space:     nowrap;
+  pointer-events:  none;
+  letter-spacing:  10px;
+}
+
+/* ── 15a. Booking Layout & Info ── */
+.booking-layout {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   80px;
+  align-items:           start;
+}
+
+.booking-info { /* left column */ }
+
+/* ── 15b. Perks List ── */
+.booking-perks { margin-top: 32px; }
+
+.perk {
+  display:     flex;
+  align-items: flex-start;
+  gap:         16px;
+  padding:     18px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.perk-icon   { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.perk-title  { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.perk-desc   { font-size: 11px; color: var(--muted); }
+
+/* ── 15c. Form Elements ── */
+.booking-form { /* right column */ }
+
+.form-group           { margin-bottom: 18px; }
+.form-group label {
+  display:         block;
+  font-size:       9px;
+  letter-spacing:  3px;
+  color:           var(--muted);
+  text-transform:  uppercase;
+  margin-bottom:   8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width:       100%;
+  background:  var(--surface2);
+  border:      1px solid var(--border);
+  color:       var(--white);
+  padding:     12px 16px;
+  font-family: var(--font-b);
+  font-size:   13px;
+  outline:     none;
+  transition:  border-color .3s;
+  appearance:  none;
+  -webkit-appearance: none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--orange); }
+
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--muted); }
+
+.form-group textarea {
+  resize:     vertical;
+  min-height: 110px;
+}
+
+/* Two-column form row */
+.form-row2 {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   16px;
+}
+
+/* ── 15d. Submit Button ── */
+.submit-btn {
+  width:           100%;
+  background:      var(--orange);
+  color:           #000;
+  border:          none;
+  padding:         18px;
+  font-family:     var(--font-b);
+  font-weight:     500;
+  font-size:       12px;
+  letter-spacing:  3px;
+  text-transform:  uppercase;
+  cursor:          pointer;
+  transition:      all .3s;
+  margin-top:      8px;
+}
+.submit-btn:hover {
+  background: var(--blue);
+  transform:  translateY(-2px);
+  box-shadow: var(--glow-b);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   16. PHOTO GALLERY SECTION
+═══════════════════════════════════════════════════════════════════ */
+#gallery { /* inherits section padding */ }
+
+/* ── 16a. Upload Bar ── */
+.gallery-upload-bar {
+  display:     flex;
+  align-items: center;
+  gap:         16px;
+  margin-bottom: 32px;
+  flex-wrap:   wrap;
+}
+
+.gallery-upload-btn {
+  background:      transparent;
+  border:          1px dashed rgba(255,72,0,.4);
+  color:           var(--orange);
+  padding:         12px 24px;
+  font-family:     var(--font-b);
+  font-size:       10px;
+  letter-spacing:  2px;
+  text-transform:  uppercase;
+  cursor:          pointer;
+  transition:      all .3s;
+}
+.gallery-upload-btn:hover { background: rgba(255,72,0,.1); }
+
+/* ── 16b. Gallery Grid — 12-column mosaic ── */
+.gallery-grid {
+  display:               grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows:        180px;
+  gap:                   4px;
+}
+
+/* All gallery items */
+.gal-item {
+  background:  var(--surface);
+  border:      1px solid rgba(255,255,255,.04);
+  overflow:    hidden;
+  position:    relative;
+  cursor:      pointer;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Orange→blue gradient hover overlay */
+.gal-item::after {
+  content:    '';
+  position:   absolute;
+  inset:      0;
+  background: linear-gradient(135deg, rgba(255,72,0,.3), rgba(0,200,255,.2));
+  opacity:    0;
+  transition: opacity .4s;
+}
+.gal-item:hover::after { opacity: 1; }
+
+.gal-item img             { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.gal-item:hover img       { transform: scale(1.05); }
+
+/* Empty upload-slot styling */
+.gal-item.add-btn {
+  border:          1px dashed rgba(255,72,0,.3);
+  flex-direction:  column;
+  gap:             8px;
+  color:           var(--muted);
+  font-size:       10px;
+  letter-spacing:  2px;
+  transition:      all .3s;
+}
+.gal-item.add-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+/* Mosaic span classes — 12-column grid */
+.gi1 { grid-column: span 5; grid-row: span 2; }   /* Large left hero          */
+.gi2 { grid-column: span 4; }                       /* Medium top-centre        */
+.gi3 { grid-column: span 3; }                       /* Narrow top-right         */
+.gi4 { grid-column: span 4; }                       /* Medium bottom-centre     */
+.gi5 { grid-column: span 3; }                       /* Narrow bottom-right      */
+.gi6 { grid-column: span 4; grid-row: span 2; }   /* Medium tall right        */
+.gi7 { grid-column: span 3; }                       /* Small bottom-left        */
+.gi8 { grid-column: span 5; }                       /* Wide bottom-centre       */
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   17. FOOTER
+═══════════════════════════════════════════════════════════════════ */
+footer {
+  border-top:  1px solid var(--border);
+  padding:     48px 5vw;
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap:   wrap;
+  gap:         24px;
+}
+
+.footer-logo {
+  font-family:    var(--font-d);
+  font-size:      1.6rem;
+  font-weight:    900;
+  letter-spacing: 4px;
+}
+.footer-logo span { color: var(--orange); }
+
+.footer-socials       { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-socials a {
+  font-size:       10px;
+  letter-spacing:  2px;
+  text-transform:  uppercase;
+  color:           var(--muted);
+  transition:      color .3s;
+  position:        relative;
+}
+.footer-socials a::after {
+  content:    '';
+  position:   absolute;
+  bottom:     -3px;
+  left:       0;
+  width:      0;
+  height:     1px;
+  background: var(--orange);
+  transition: width .3s;
+}
+.footer-socials a:hover        { color: var(--orange); }
+.footer-socials a:hover::after { width: 100%; }
+
+.footer-copy {
+  font-size:       10px;
+  color:           var(--muted);
+  letter-spacing:  1px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   18. TOAST NOTIFICATION
+═══════════════════════════════════════════════════════════════════ */
+.toast {
+  position:        fixed;
+  bottom:          28px;
+  left:            50%;
+  transform:       translateX(-50%) translateY(80px);
+  background:      var(--orange);
+  color:           #000;
+  padding:         12px 28px;
+  font-size:       11px;
+  letter-spacing:  2px;
+  font-weight:     700;
+  text-transform:  uppercase;
+  z-index:         999;
+  opacity:         0;
+  transition:      all .4s var(--ease);
+  white-space:     nowrap;
+  pointer-events:  none;
+}
+.toast.show {
+  opacity:   1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   19. GLOBAL KEYFRAME ANIMATIONS
+═══════════════════════════════════════════════════════════════════ */
+
+/* Grid panning for hero background */
+@keyframes gridPan {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(60px, 60px); }
+}
+
+/* Ambient orb floating */
+@keyframes orbFloat {
+  0%,  100% { transform: translate(0, 0)     scale(1); }
+  33%        { transform: translate(20px, -30px) scale(1.05); }
+  66%        { transform: translate(-15px, 20px) scale(.97); }
+}
+
+/* Vinyl disc rotation */
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Hero element entrance */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll cue bounce */
+@keyframes bobble {
+  0%,  100% { transform: translateX(-50%) translateY(0); }
+  50%        { transform: translateX(-50%) translateY(8px); }
+}
+
+/* Live dot pulse (Now Playing) */
+@keyframes pulse {
+  0%,  100% { opacity: 1; transform: scale(1); }
+  50%        { opacity: .5; transform: scale(.8); }
+}
+
+/* Audio waveform bars */
+@keyframes wvAnim {
+  from { transform: scaleY(.3); }
+  to   { transform: scaleY(1); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   20. RESPONSIVE — TABLET  (max-width: 960px)
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 960px) {
+
+  /* Stack about & booking layouts */
+  .about-grid,
+  .booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Centre the photo in about section */
+  .photo-frame {
+    max-width: 360px;
+    margin:    0 auto;
+  }
+
+  /* Simplify events layout — hide city & ticket */
+  .event-row {
+    grid-template-columns: 60px 1fr;
+  }
+  .ev-city,
+  .ev-ticket { display: none; }
+
+  /* Switch to hamburger menu */
+  nav .nav-links { display: none; }
+  .hamburger     { display: block; }
+
+  /* Reduce hero stats gap */
+  .hero-stats { gap: 28px; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   21. RESPONSIVE — MOBILE  (max-width: 720px)
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+
+  /* Reduce section padding */
+  section { padding: var(--section-pad-sm); }
+
+  /* 2-column gallery on mobile */
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows:        140px;
+  }
+  /* All gallery items equal size */
+  .gal-item {
+    grid-column: span 1 !important;
+    grid-row:    span 1 !important;
+  }
+
+  /* Single-column booking form */
+  .form-row2 { grid-template-columns: 1fr; }
+
+  /* Single-column video grid */
+  .video-grid { grid-template-columns: 1fr; }
+
+  /* Smaller hero stats */
+  .hero-stats { gap: 20px; }
+  .stat-n     { font-size: 2.2rem; }
+
+  /* Smaller about stats */
+  .a-stat .n { font-size: 2rem; }
+
+  /* Shrink upload zones */
+  .upload-zone,
+  .video-upload-zone { padding: 20px 24px; min-width: 0; width: 100%; }
+
+  /* Player controls wrap */
+  .controls { gap: 10px; flex-wrap: wrap; }
+  .vol-wrap { margin-left: 0; width: 100%; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   22. RESPONSIVE — SMALL PHONES  (max-width: 480px)
+═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+  /* Stacked footer */
+  footer {
+    flex-direction: column;
+    align-items:    flex-start;
+    gap:            20px;
+  }
+
+  /* Smaller nav logo */
+  .nav-logo { font-size: 1.5rem; }
+
+  /* Events list — minimal */
+  .event-row {
+    grid-template-columns: 50px 1fr;
+    gap:                   16px;
+    padding:               20px 0;
+  }
+
+  /* Tighten hero */
+  #hero { padding: 100px 4vw 60px; }
+
+  /* Mobile menu links larger on small screens */
+  .mobile-menu a { font-size: 2rem; }
+
+  /* Smaller now-playing title */
+  .np-title { font-size: 1.5rem; }
+
+  /* Audio header stacks vertically */
+  .audio-header { flex-direction: column; }
+}
