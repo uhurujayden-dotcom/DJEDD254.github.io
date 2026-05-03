@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ EDD254 — Official Website</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════ */
+:root {
+  --bg:        #07070e;
+  --surface:   #0f0f1a;
+  --surface2:  #161626;
+  --orange:    #ff4800;
+  --blue:      #00c8ff;
+  --white:     #f2f2f2;
+  --muted:     #4a4a60;
+  --border:    rgba(255,72,0,0.18);
+  --border2:   rgba(0,200,255,0.12);
+  --font-d:    'Barlow Condensed', sans-serif;
+  --font-b:    'IBM Plex Mono', monospace;
+  --glow-o:    0 0 40px rgba(255,72,0,0.35);
+  --glow-b:    0 0 40px rgba(0,200,255,0.25);
+}
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; font-size:14px; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-b);
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+img { max-width:100%; display:block; }
+a { text-decoration:none; color:inherit; }
+button, input, textarea, select { font-family:var(--font-b); }
+
+/* ── CUSTOM CURSOR ── */
+#cur { width:10px; height:10px; background:var(--orange); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .15s,height .15s; mix-blend-mode:difference; }
+#cur-r { width:32px; height:32px; border:1px solid var(--orange); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:all .12s ease; opacity:.5; }
+
+/* ── NOISE OVERLAY ── */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:200; opacity:.45;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--orange); }
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 5vw;
+  height:72px;
+  background:rgba(7,7,14,0.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  transition:height .3s;
+}
+nav.scrolled { height:56px; }
+.nav-logo {
+  font-family:var(--font-d);
+  font-size:1.9rem;
+  font-weight:900;
+  letter-spacing:4px;
+  color:var(--white);
+}
+.nav-logo span { color:var(--orange); }
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a {
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--muted); transition:color .25s; position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-4px; left:0;
+  width:0; height:1px; background:var(--orange); transition:width .3s;
+}
+.nav-links a:hover { color:var(--white); }
+.nav-links a:hover::after { width:100%; }
+.nav-book {
+  background:var(--orange); color:#000 !important;
+  padding:10px 22px; font-weight:700; letter-spacing:2px !important;
+  font-size:10px !important; transition:background .3s !important;
+}
+.nav-book:hover { background:var(--blue) !important; }
+.nav-book::after { display:none !important; }
+.hamburger { display:none; background:none; border:none; color:var(--white); font-size:22px; cursor:pointer; }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+#hero {
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  padding:120px 5vw 80px;
+  text-align:center;
+}
+
+/* Grid background */
+.hero-grid {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,72,0,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,72,0,0.06) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:gridPan 20s linear infinite;
+}
+@keyframes gridPan { from{transform:translate(0,0)} to{transform:translate(60px,60px)} }
+
+/* Orbs */
+.orb {
+  position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; animation:orbFloat 8s ease-in-out infinite;
+}
+.orb1 { width:500px; height:500px; background:rgba(255,72,0,0.12); top:-100px; right:-100px; animation-delay:0s; }
+.orb2 { width:400px; height:400px; background:rgba(0,200,255,0.08); bottom:-50px; left:-80px; animation-delay:3s; }
+.orb3 { width:300px; height:300px; background:rgba(255,72,0,0.07); bottom:20%; right:10%; animation-delay:5s; }
+@keyframes orbFloat {
+  0%,100% { transform:translate(0,0) scale(1); }
+  33% { transform:translate(20px,-30px) scale(1.05); }
+  66% { transform:translate(-15px,20px) scale(.97); }
+}
+
+/* Vinyl disc */
+.vinyl-wrap { position:relative; margin-bottom:40px; }
+.vinyl {
+  width:200px; height:200px; border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,
+    #000 0%, #000 12%, #111 13%, #1a1a1a 25%, #0d0d0d 26%,
+    #1a1a1a 40%, #0d0d0d 41%, #1a1a1a 55%, #111 56%,
+    #0d0d0d 70%, #222 100%
+  );
+  border:3px solid var(--orange);
+  animation:vinylSpin 6s linear infinite;
+  box-shadow: var(--glow-o), 0 0 80px rgba(255,72,0,0.15);
+  position:relative;
+}
+.vinyl::before {
+  content:''; position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:28px; height:28px; border-radius:50%;
+  background:var(--bg); border:2px solid var(--orange);
+}
+.vinyl::after {
+  content:'EDD254';
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-family:var(--font-d); font-size:.5rem; font-weight:900;
+  letter-spacing:2px; color:var(--orange);
+  white-space:nowrap; margin-top:22px;
+  animation:vinylSpin 6s linear infinite reverse;
+}
+@keyframes vinylSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+.hero-tag {
+  font-size:11px; letter-spacing:6px; color:var(--orange);
+  text-transform:uppercase; margin-bottom:16px;
+  opacity:0; animation:fadeUp .8s forwards .3s;
+}
+.hero-name {
+  font-family:var(--font-d); font-size:clamp(4.5rem,14vw,11rem);
+  font-weight:900; line-height:.9; letter-spacing:2px;
+  opacity:0; animation:fadeUp .8s forwards .5s;
+}
+.hero-name .line2 { color:var(--orange); display:block; }
+.hero-sub {
+  font-size:clamp(.75rem,1.5vw,.95rem); color:var(--muted);
+  letter-spacing:3px; margin-top:20px;
+  opacity:0; animation:fadeUp .8s forwards .7s;
+}
+.hero-btns {
+  display:flex; gap:14px; margin-top:44px; justify-content:center;
+  flex-wrap:wrap;
+  opacity:0; animation:fadeUp .8s forwards .9s;
+}
+.btn-primary {
+  background:var(--orange); color:#000; border:none;
+  padding:16px 38px; font-family:var(--font-b); font-weight:500;
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:all .3s;
+}
+.btn-primary:hover { background:var(--white); transform:translateY(-2px); }
+.btn-outline {
+  background:transparent; color:var(--white);
+  border:1px solid rgba(255,255,255,0.2);
+  padding:16px 38px; font-family:var(--font-b);
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:all .3s;
+}
+.btn-outline:hover { border-color:var(--blue); color:var(--blue); }
+
+/* Stats bar */
+.hero-stats {
+  display:flex; gap:48px; margin-top:72px; justify-content:center;
+  flex-wrap:wrap;
+  opacity:0; animation:fadeUp .8s forwards 1.1s;
+}
+.stat { text-align:center; }
+.stat-n { font-family:var(--font-d); font-size:2.8rem; font-weight:900; color:var(--orange); line-height:1; }
+.stat-l { font-size:9px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-top:4px; }
+
+.scroll-cue {
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  opacity:.4; animation:fadeUp .8s forwards 1.4s, bobble 2s infinite 2.5s;
+}
+.scroll-cue span { font-size:9px; letter-spacing:4px; text-transform:uppercase; }
+.scroll-line { width:1px; height:48px; background:linear-gradient(to bottom, var(--orange), transparent); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+@keyframes bobble { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+/* ═══════════════════════════════════════
+   SECTIONS SHARED
+═══════════════════════════════════════ */
+section { padding:100px 5vw; }
+.sec-label {
+  display:flex; align-items:center; gap:12px;
+  font-size:10px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--orange); margin-bottom:14px;
+}
+.sec-label::before { content:''; width:28px; height:1px; background:var(--orange); }
+.sec-title {
+  font-family:var(--font-d); font-size:clamp(2.4rem,6vw,5rem);
+  font-weight:900; line-height:.95; letter-spacing:1px;
+  margin-bottom:16px;
+}
+.sec-title em { font-style:normal; color:var(--orange); }
+
+/* Reveal on scroll */
+.reveal { opacity:0; transform:translateY(40px); transition:opacity .8s ease, transform .8s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ═══════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════ */
+#about { background:var(--surface); }
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+
+.photo-frame {
+  position:relative;
+}
+.photo-box {
+  width:100%; aspect-ratio:3/4;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:14px; color:var(--muted);
+  font-size:11px; letter-spacing:2px;
+  position:relative; overflow:hidden; cursor:pointer;
+  transition:border-color .3s;
+}
+.photo-box:hover { border-color:rgba(255,72,0,.5); }
+.photo-box input { display:none; }
+.photo-box img.uploaded { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.photo-upload-icon { font-size:2.5rem; opacity:.3; }
+.photo-box .upload-hint { font-size:10px; text-align:center; color:var(--muted); }
+.photo-btn {
+  background:transparent; border:1px dashed var(--orange);
+  color:var(--orange); padding:8px 18px;
+  font-family:var(--font-b); font-size:10px; letter-spacing:2px;
+  cursor:pointer; transition:background .3s; margin-top:6px;
+}
+.photo-btn:hover { background:rgba(255,72,0,.12); }
+
+.corner { position:absolute; width:18px; height:18px; }
+.corner.tl { top:-1px; left:-1px; border-top:2px solid var(--blue); border-left:2px solid var(--blue); }
+.corner.br { bottom:-1px; right:-1px; border-bottom:2px solid var(--blue); border-right:2px solid var(--blue); }
+
+.about-text { font-size:13px; color:rgba(242,242,242,.7); line-height:2; margin-bottom:16px; }
+.genres { display:flex; flex-wrap:wrap; gap:8px; margin:24px 0 32px; }
+.genre-pill {
+  border:1px solid var(--border); padding:6px 16px;
+  font-size:10px; letter-spacing:2px; color:var(--muted);
+  text-transform:uppercase; transition:all .3s; cursor:default;
+}
+.genre-pill:hover { border-color:var(--orange); color:var(--orange); }
+
+.about-stats {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--border); margin-top:32px;
+}
+.a-stat { background:var(--bg); padding:22px 20px; }
+.a-stat .n { font-family:var(--font-d); font-size:2.4rem; font-weight:900; color:var(--orange); line-height:1; }
+.a-stat .l { font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-top:4px; }
+
+/* ═══════════════════════════════════════
+   AUDIO PLAYER
+═══════════════════════════════════════ */
+#audio { }
+.audio-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:48px; gap:24px; flex-wrap:wrap; }
+
+/* Upload drop zone */
+.upload-zone {
+  border:1px dashed var(--orange);
+  padding:28px 32px; text-align:center;
+  cursor:pointer; transition:all .3s;
+  background:rgba(255,72,0,.03);
+  flex-shrink:0; min-width:220px;
+}
+.upload-zone:hover, .upload-zone.drag { background:rgba(255,72,0,.08); border-color:rgba(255,72,0,.7); }
+.upload-zone input { display:none; }
+.uz-icon { font-size:2rem; margin-bottom:8px; opacity:.6; }
+.uz-label { font-size:10px; letter-spacing:2px; color:var(--orange); text-transform:uppercase; }
+.uz-sub { font-size:10px; color:var(--muted); margin-top:6px; }
+
+/* Now playing */
+.now-playing {
+  background:var(--surface2); border:1px solid var(--border);
+  padding:28px 32px; margin-bottom:4px;
+}
+.np-label { font-size:9px; letter-spacing:4px; color:var(--orange); text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.np-label::after { content:''; width:8px; height:8px; border-radius:50%; background:var(--orange); animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+.np-title { font-family:var(--font-d); font-size:2rem; font-weight:700; letter-spacing:2px; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.np-artist { font-size:11px; color:var(--muted); margin-bottom:20px; }
+
+/* Progress bar */
+.progress-wrap { position:relative; margin-bottom:12px; cursor:pointer; }
+.progress-bg { height:4px; background:var(--surface); border-radius:2px; }
+.progress-fill { height:4px; background:linear-gradient(to right, var(--orange), var(--blue)); border-radius:2px; width:0%; transition:width .1s linear; }
+.progress-thumb {
+  position:absolute; top:50%; right:0; transform:translate(50%,-50%);
+  width:14px; height:14px; border-radius:50%; background:var(--orange);
+  border:2px solid var(--bg); box-shadow:var(--glow-o); opacity:0; transition:opacity .2s;
+}
+.progress-wrap:hover .progress-thumb { opacity:1; }
+.progress-times { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); }
+
+/* Controls */
+.controls { display:flex; align-items:center; gap:16px; margin-top:16px; }
+.ctrl-btn {
+  width:36px; height:36px; border-radius:50%; border:1px solid var(--border);
+  background:none; color:var(--muted); cursor:pointer; display:flex;
+  align-items:center; justify-content:center; font-size:13px;
+  transition:all .2s;
+}
+.ctrl-btn:hover { border-color:var(--orange); color:var(--orange); }
+.ctrl-play {
+  width:52px; height:52px; border-radius:50%;
+  background:var(--orange); border:none; color:#000;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:18px; transition:all .2s; box-shadow:var(--glow-o);
+}
+.ctrl-play:hover { background:var(--white); transform:scale(1.05); }
+.vol-wrap { display:flex; align-items:center; gap:10px; margin-left:auto; }
+.vol-icon { font-size:13px; color:var(--muted); }
+.vol-slider { -webkit-appearance:none; width:90px; height:3px; background:var(--surface); border-radius:2px; outline:none; cursor:pointer; }
+.vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:var(--orange); cursor:pointer; }
+
+/* Track list */
+.track-list { margin-top:24px; }
+.track-item {
+  display:flex; align-items:center; gap:16px;
+  padding:14px 16px; background:var(--surface);
+  border:1px solid rgba(255,255,255,.04);
+  margin-bottom:3px; cursor:pointer;
+  transition:all .2s; position:relative; overflow:hidden;
+}
+.track-item::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:2px; background:var(--orange);
+  transform:scaleY(0); transform-origin:bottom;
+  transition:transform .3s;
+}
+.track-item:hover, .track-item.playing { background:var(--surface2); }
+.track-item.playing::before, .track-item:hover::before { transform:scaleY(1); }
+.track-num { font-family:var(--font-d); font-size:1.4rem; font-weight:700; color:rgba(255,72,0,.2); width:32px; flex-shrink:0; }
+.track-item.playing .track-num { color:var(--orange); }
+.track-info { flex:1; min-width:0; }
+.track-title-t { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track-meta { font-size:10px; color:var(--muted); margin-top:2px; }
+.track-dur { font-size:11px; color:var(--muted); flex-shrink:0; }
+.track-play-icon { width:30px; height:30px; border-radius:50%; border:1px solid var(--border); background:none; color:var(--muted); display:flex; align-items:center; justify-content:center; font-size:11px; cursor:pointer; transition:all .2s; flex-shrink:0; }
+.track-play-icon:hover { border-color:var(--orange); color:var(--orange); }
+.track-item.playing .track-play-icon { border-color:var(--orange); color:var(--orange); animation:none; }
+.track-del { background:none; border:none; color:var(--muted); font-size:14px; cursor:pointer; padding:4px 8px; transition:color .2s; flex-shrink:0; }
+.track-del:hover { color:var(--orange); }
+
+/* Waveform bars animation */
+.wv { display:flex; align-items:center; gap:2px; height:24px; flex-shrink:0; }
+.wv-b { width:3px; background:var(--muted); border-radius:1px; transition:background .3s; }
+.track-item.playing .wv-b { background:var(--orange); animation:wvAnim .6s ease-in-out infinite alternate; }
+@keyframes wvAnim { from{transform:scaleY(.3)} to{transform:scaleY(1)} }
+
+/* ═══════════════════════════════════════
+   VIDEO GALLERY
+═══════════════════════════════════════ */
+#video { background:var(--surface); }
+.video-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:48px; gap:24px; flex-wrap:wrap; }
+
+.video-upload-zone {
+  border:1px dashed var(--blue);
+  padding:28px 32px; text-align:center; cursor:pointer;
+  background:rgba(0,200,255,.03); transition:all .3s;
+  flex-shrink:0; min-width:220px;
+}
+.video-upload-zone:hover, .video-upload-zone.drag { background:rgba(0,200,255,.08); border-color:rgba(0,200,255,.7); }
+.video-upload-zone input { display:none; }
+.vuz-icon { font-size:2rem; margin-bottom:8px; opacity:.6; color:var(--blue); }
+.vuz-label { font-size:10px; letter-spacing:2px; color:var(--blue); text-transform:uppercase; }
+.vuz-sub { font-size:10px; color:var(--muted); margin-top:6px; }
+
+.video-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:4px; }
+.video-card {
+  background:var(--surface2); position:relative; overflow:hidden;
+  border:1px solid rgba(255,255,255,.04); cursor:pointer;
+  transition:border-color .3s;
+}
+.video-card:hover { border-color:var(--blue); }
+.video-card video { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+.video-card-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.8) 0%, transparent 50%);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:16px; pointer-events:none; opacity:1;
+}
+.video-card:hover .video-card-overlay { pointer-events:auto; }
+.vid-title { font-family:var(--font-d); font-size:1.1rem; font-weight:700; letter-spacing:1px; margin-bottom:4px; }
+.vid-meta { font-size:10px; color:rgba(255,255,255,.5); }
+.vid-play-btn {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:56px; height:56px; border-radius:50%;
+  background:rgba(0,200,255,.2); border:2px solid var(--blue);
+  color:var(--blue); font-size:20px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:all .3s; pointer-events:auto;
+  opacity:0;
+}
+.video-card:hover .vid-play-btn { opacity:1; transform:translate(-50%,-50%) scale(1.05); }
+.vid-del {
+  position:absolute; top:10px; right:10px;
+  background:rgba(0,0,0,.7); border:1px solid rgba(255,72,0,.3);
+  color:var(--muted); padding:4px 10px; font-family:var(--font-b);
+  font-size:10px; cursor:pointer; transition:all .2s;
+  opacity:0;
+}
+.video-card:hover .vid-del { opacity:1; }
+.vid-del:hover { background:var(--orange); color:#000; }
+
+/* Video lightbox */
+.lightbox {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.96); z-index:800;
+  align-items:center; justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.lightbox.open { display:flex; }
+.lightbox-inner { position:relative; max-width:90vw; max-height:85vh; }
+.lightbox video { max-width:90vw; max-height:80vh; }
+.lightbox-close {
+  position:absolute; top:-44px; right:0;
+  background:none; border:none; color:var(--muted);
+  font-size:24px; cursor:pointer; transition:color .2s;
+}
+.lightbox-close:hover { color:var(--orange); }
+
+/* Empty states */
+.empty-state {
+  text-align:center; padding:60px; color:var(--muted);
+  border:1px dashed rgba(255,255,255,.06);
+  font-size:12px; letter-spacing:2px;
+}
+.empty-state .es-icon { font-size:3rem; margin-bottom:16px; opacity:.3; }
+
+/* ═══════════════════════════════════════
+   EVENTS
+═══════════════════════════════════════ */
+#events { }
+.events-list { border-top:1px solid var(--border); margin-top:48px; }
+.event-row {
+  display:grid; grid-template-columns:80px 1fr 1fr auto;
+  align-items:center; gap:32px; padding:28px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  position:relative; transition:padding .3s;
+}
+.event-row::after {
+  content:''; position:absolute; left:-5vw; right:-5vw; top:0; bottom:0;
+  background:var(--surface); opacity:0; transition:opacity .3s; z-index:-1;
+}
+.event-row:hover::after { opacity:1; }
+.event-row:hover { padding-left:20px; }
+.ev-date { text-align:center; }
+.ev-day { font-family:var(--font-d); font-size:2.5rem; font-weight:900; color:var(--orange); line-height:1; }
+.ev-month { font-size:9px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
+.ev-name { font-family:var(--font-d); font-size:1.4rem; font-weight:700; letter-spacing:2px; }
+.ev-venue { font-size:11px; color:var(--muted); margin-top:4px; }
+.ev-city { font-size:11px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; }
+.ev-ticket {
+  background:transparent; border:1px solid var(--orange); color:var(--orange);
+  padding:10px 22px; font-family:var(--font-b); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase; cursor:pointer;
+  transition:all .3s; white-space:nowrap;
+}
+.ev-ticket:hover { background:var(--orange); color:#000; }
+
+/* ═══════════════════════════════════════
+   BOOKING
+═══════════════════════════════════════ */
+#booking { background:var(--surface); position:relative; overflow:hidden; }
+#booking::before {
+  content:'BOOK'; font-family:var(--font-d); font-size:28vw; font-weight:900;
+  color:rgba(255,72,0,.025); position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%); white-space:nowrap; pointer-events:none;
+  letter-spacing:10px;
+}
+.booking-layout { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.booking-info { }
+.booking-perks { margin-top:32px; }
+.perk { display:flex; align-items:flex-start; gap:16px; padding:18px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+.perk-icon { font-size:1.4rem; flex-shrink:0; margin-top:2px; }
+.perk-title { font-size:13px; font-weight:500; margin-bottom:4px; }
+.perk-desc { font-size:11px; color:var(--muted); }
+
+.booking-form { }
+.form-group { margin-bottom:18px; }
+.form-group label { display:block; font-size:9px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width:100%; background:var(--surface2); border:1px solid var(--border);
+  color:var(--white); padding:12px 16px; font-family:var(--font-b);
+  font-size:13px; outline:none; transition:border-color .3s; appearance:none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color:var(--orange); }
+.form-group textarea { resize:vertical; min-height:110px; }
+.form-row2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.submit-btn {
+  width:100%; background:var(--orange); color:#000; border:none;
+  padding:18px; font-family:var(--font-b); font-weight:500;
+  font-size:12px; letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:all .3s; margin-top:8px;
+}
+.submit-btn:hover { background:var(--blue); transform:translateY(-2px); }
+
+/* ═══════════════════════════════════════
+   GALLERY (PHOTO)
+═══════════════════════════════════════ */
+#gallery { }
+.gallery-upload-bar {
+  display:flex; align-items:center; gap:16px;
+  margin-bottom:32px; flex-wrap:wrap;
+}
+.gallery-upload-btn {
+  background:transparent; border:1px dashed rgba(255,72,0,.4);
+  color:var(--orange); padding:12px 24px; font-family:var(--font-b);
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; transition:all .3s;
+}
+.gallery-upload-btn:hover { background:rgba(255,72,0,.1); }
+.gallery-grid {
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-auto-rows:180px;
+  gap:4px;
+}
+.gal-item {
+  background:var(--surface); border:1px solid rgba(255,255,255,.04);
+  overflow:hidden; position:relative; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.gal-item::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(255,72,0,.3), rgba(0,200,255,.2));
+  opacity:0; transition:opacity .4s;
+}
+.gal-item:hover::after { opacity:1; }
+.gal-item img { width:100%; height:100%; object-fit:cover; transition:transform .5s; }
+.gal-item:hover img { transform:scale(1.05); }
+.gal-item.add-btn {
+  border:1px dashed rgba(255,72,0,.3); cursor:pointer;
+  flex-direction:column; gap:8px;
+  color:var(--muted); font-size:10px; letter-spacing:2px;
+  transition:all .3s;
+}
+.gal-item.add-btn:hover { border-color:var(--orange); color:var(--orange); }
+.gi1 { grid-column:span 5; grid-row:span 2; }
+.gi2 { grid-column:span 4; }
+.gi3 { grid-column:span 3; }
+.gi4 { grid-column:span 4; }
+.gi5 { grid-column:span 3; }
+.gi6 { grid-column:span 4; grid-row:span 2; }
+.gi7 { grid-column:span 3; }
+.gi8 { grid-column:span 5; }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  border-top:1px solid var(--border); padding:48px 5vw;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:24px;
+}
+.footer-logo { font-family:var(--font-d); font-size:1.6rem; font-weight:900; letter-spacing:4px; }
+.footer-logo span { color:var(--orange); }
+.footer-socials { display:flex; gap:24px; }
+.footer-socials a { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); transition:color .3s; }
+.footer-socials a:hover { color:var(--orange); }
+.footer-copy { font-size:10px; color:var(--muted); letter-spacing:1px; }
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+.toast {
+  position:fixed; bottom:28px; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--orange); color:#000;
+  padding:12px 28px; font-size:11px; letter-spacing:2px;
+  font-weight:700; text-transform:uppercase;
+  z-index:999; opacity:0;
+  transition:all .4s cubic-bezier(.25,.46,.45,.94);
+  white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media(max-width:960px) {
+  .about-grid, .booking-layout { grid-template-columns:1fr; }
+  .photo-frame { max-width:360px; margin:0 auto; }
+  .event-row { grid-template-columns:60px 1fr; }
+  .ev-city, .ev-ticket { display:none; }
+  nav .nav-links { display:none; }
+  .hamburger { display:block; }
+}
+@media(max-width:720px) {
+  section { padding:72px 4vw; }
+  .gallery-grid { grid-template-columns:1fr 1fr; grid-auto-rows:140px; }
+  .gal-item { grid-column:span 1 !important; grid-row:span 1 !important; }
+  .form-row2 { grid-template-columns:1fr; }
+  .hero-stats { gap:28px; }
+  .video-grid { grid-template-columns:1fr; }
+}
+
+/* ═══════════════════════════════════════
+   MOBILE MENU
+═══════════════════════════════════════ */
+.mobile-menu {
+  display:none; position:fixed; inset:0; z-index:490;
+  background:rgba(7,7,14,.97); flex-direction:column;
+  align-items:center; justify-content:center; gap:32px;
+}
+.mobile-menu.open { display:flex; }
+.mobile-menu a {
+  font-family:var(--font-d); font-size:2.5rem; font-weight:900;
+  letter-spacing:3px; text-transform:uppercase; color:var(--muted);
+  transition:color .2s;
+}
+.mobile-menu a:hover { color:var(--orange); }
+.mob-close { position:absolute; top:28px; right:28px; background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Video Lightbox -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <video id="lb-video" controls style="max-width:90vw;max-height:80vh;"></video>
+  </div>
+</div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mob-close" onclick="toggleMenu()">✕</button>
+  <a href="#about" onclick="toggleMenu()">About</a>
+  <a href="#audio" onclick="toggleMenu()">Mixes</a>
+  <a href="#video" onclick="toggleMenu()">Videos</a>
+  <a href="#events" onclick="toggleMenu()">Events</a>
+  <a href="#gallery" onclick="toggleMenu()">Gallery</a>
+  <a href="#booking" onclick="toggleMenu()">Book</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">DJ <span>EDD</span>254</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#audio">Mixes</a></li>
+    <li><a href="#video">Videos</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#booking" class="nav-book">Book Now</a></li>
+  </ul>
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="vinyl-wrap">
+    <div class="vinyl"></div>
+  </div>
+
+  <p class="hero-tag">Official Website · Mombasa, Kenya</p>
+  <h1 class="hero-name">
+    DJ EDD
+    <span class="line2">254</span>
+  </h1>
+  <p class="hero-sub">Afrobeats · House · Hip Hop · R&B · Bongo · Dancehall</p>
+
+  <div class="hero-btns">
+    <a href="#audio" class="btn-primary">Play My Mixes</a>
+    <a href="#booking" class="btn-outline">Book A Show</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Years Active</div></div>
+    <div class="stat"><div class="stat-n">400+</div><div class="stat-l">Events</div></div>
+    <div class="stat"><div class="stat-n">20+</div><div class="stat-l">Cities</div></div>
+    <div class="stat"><div class="stat-n">50+</div><div class="stat-l">Mixes</div></div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="about-grid reveal">
+    <div class="photo-frame">
+      <div class="photo-box" id="photoBox" onclick="document.getElementById('photoInput').click()">
+        <div class="corner tl"></div>
+        <div class="corner br"></div>
+        <div id="photoPlaceholder">
+          <div class="photo-upload-icon">🎧</div>
+          <p class="upload-hint">Click to upload your photo</p>
+          <button class="photo-btn" onclick="event.stopPropagation();document.getElementById('photoInput').click()">+ Upload Photo</button>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" onchange="uploadPhoto(event)">
+      </div>
+    </div>
+    <div>
+      <div class="sec-label">Who Am I</div>
+      <h2 class="sec-title">THE SOUND<br>OF <em>EDD254</em></h2>
+      <p class="about-text" id="about-bio">Born and raised in Kenya's coastal heartbeat of Mombasa, DJ EDD254 has spent over 8 years mastering the art of the mix. Known for seamless genre-blending and an electric connection with the crowd, every set is a journey that keeps dancefloors locked in.</p>
+      <p class="about-text">From intimate rooftop sessions overlooking the Indian Ocean to headline slots at Nairobi's biggest festivals — the energy never drops. The mission: turn any space into an experience people talk about for years.</p>
+      <div class="genres" id="genres-list">
+        <span class="genre-pill">Afrobeats</span>
+        <span class="genre-pill">Amapiano</span>
+        <span class="genre-pill">Hip Hop</span>
+        <span class="genre-pill">R&B</span>
+        <span class="genre-pill">Bongo Flava</span>
+        <span class="genre-pill">House</span>
+        <span class="genre-pill">Dancehall</span>
+        <span class="genre-pill">Gengetone</span>
+      </div>
+      <div class="about-stats">
+        <div class="a-stat"><div class="n">8+</div><div class="l">Years Active</div></div>
+        <div class="a-stat"><div class="n">400+</div><div class="l">Events Played</div></div>
+        <div class="a-stat"><div class="n">20+</div><div class="l">Cities Toured</div></div>
+        <div class="a-stat"><div class="n">50+</div><div class="l">Mix Releases</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AUDIO PLAYER ═══ -->
+<section id="audio">
+  <div class="audio-header reveal">
+    <div>
+      <div class="sec-label">Listen</div>
+      <h2 class="sec-title">MIXES &<br><em>TRACKS</em></h2>
+    </div>
+    <div class="upload-zone" id="audioDropZone" onclick="document.getElementById('audioInput').click()"
+         ondragover="handleDragOver(event,'audioDropZone')" ondragleave="handleDragLeave('audioDropZone')"
+         ondrop="handleAudioDrop(event)">
+      <div class="uz-icon">🎵</div>
+      <div class="uz-label">Upload Audio</div>
+      <div class="uz-sub">MP3, WAV, OGG · Drag & drop or click</div>
+      <input type="file" id="audioInput" accept="audio/*" multiple onchange="handleAudioFiles(event)">
+    </div>
+  </div>
+
+  <!-- Now Playing -->
+  <div class="now-playing reveal">
+    <div class="np-label">Now Playing</div>
+    <div class="np-title" id="np-title">No Track Selected</div>
+    <div class="np-artist" id="np-artist">Upload a track to begin</div>
+
+    <div class="progress-wrap" id="progressWrap" onclick="seekAudio(event)">
+      <div class="progress-bg">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-thumb" id="progressThumb" style="left:0%"></div>
+    </div>
+    <div class="progress-times">
+      <span id="timeElapsed">0:00</span>
+      <span id="timeDuration">0:00</span>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl-btn" onclick="shuffleTrack()" title="Shuffle">⇄</button>
+      <button class="ctrl-btn" onclick="prevTrack()" title="Previous">⏮</button>
+      <button class="ctrl-play" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="ctrl-btn" onclick="nextTrack()" title="Next">⏭</button>
+      <button class="ctrl-btn" onclick="toggleRepeat()" id="repeatBtn" title="Repeat">↺</button>
+      <div class="vol-wrap">
+        <span class="vol-icon">🔈</span>
+        <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)">
+        <span class="vol-icon">🔊</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Track List -->
+  <div class="track-list" id="trackList">
+    <div class="empty-state" id="audioEmpty">
+      <div class="es-icon">🎧</div>
+      Upload your first mix to get started
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VIDEO ═══ -->
+<section id="video">
+  <div class="video-header reveal">
+    <div>
+      <div class="sec-label">Watch</div>
+      <h2 class="sec-title">VIDEO<br><em>GALLERY</em></h2>
+    </div>
+    <div class="video-upload-zone" id="videoDropZone" onclick="document.getElementById('videoInput').click()"
+         ondragover="handleDragOver(event,'videoDropZone')" ondragleave="handleDragLeave('videoDropZone')"
+         ondrop="handleVideoDrop(event)">
+      <div class="vuz-icon">🎬</div>
+      <div class="vuz-label">Upload Video</div>
+      <div class="vuz-sub">MP4, MOV, WebM · Drag & drop or click</div>
+      <input type="file" id="videoInput" accept="video/*" multiple onchange="handleVideoFiles(event)">
+    </div>
+  </div>
+  <div class="video-grid" id="videoGrid">
+    <div class="empty-state" id="videoEmpty" style="grid-column:1/-1;">
+      <div class="es-icon">🎬</div>
+      Upload your first video to display it here
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EVENTS ═══ -->
+<section id="events">
+  <div class="reveal">
+    <div class="sec-label">On The Circuit</div>
+    <h2 class="sec-title">UPCOMING<br><em>SHOWS</em></h2>
+  </div>
+  <div class="events-list reveal" id="eventsList"></div>
+</section>
+
+<!-- ═══ GALLERY ═══ -->
+<section id="gallery">
+  <div class="reveal">
+    <div class="sec-label">Live Moments</div>
+    <h2 class="sec-title">PHOTO<br><em>GALLERY</em></h2>
+  </div>
+  <div class="gallery-upload-bar reveal">
+    <button class="gallery-upload-btn" onclick="document.getElementById('galleryInput').click()">+ Add Photos</button>
+    <span style="font-size:10px;color:var(--muted);letter-spacing:1px;">Click a slot or use the button to add photos</span>
+    <input type="file" id="galleryInput" accept="image/*" multiple onchange="addGalleryPhotos(event)" style="display:none">
+  </div>
+  <div class="gallery-grid reveal" id="galleryGrid"></div>
+</section>
+
+<!-- ═══ BOOKING ═══ -->
+<section id="booking">
+  <div class="booking-layout reveal">
+    <div class="booking-info">
+      <div class="sec-label">Get In Touch</div>
+      <h2 class="sec-title">BOOK<br><em>DJ EDD254</em></h2>
+      <p style="color:rgba(242,242,242,.65);font-size:13px;line-height:2;margin-bottom:12px;">
+        Available for clubs, festivals, private parties, weddings, corporate events, and beach sessions across Kenya and East Africa.
+      </p>
+      <div class="booking-perks">
+        <div class="perk"><div class="perk-icon">🎛️</div><div><div class="perk-title">Professional Equipment</div><div class="perk-desc">Pioneer CDJ-3000 setup, full PA system available on request</div></div></div>
+        <div class="perk"><div class="perk-icon">🌍</div><div><div class="perk-title">Available Nationwide</div><div class="perk-desc">Mombasa, Nairobi, Diani, Malindi, Kisumu and beyond</div></div></div>
+        <div class="perk"><div class="perk-icon">🎵</div><div><div class="perk-title">Custom Set Curation</div><div class="perk-desc">Bespoke playlists tailored to your event's vibe and audience</div></div></div>
+        <div class="perk"><div class="perk-icon">⚡</div><div><div class="perk-title">Fast Response</div><div class="perk-desc">All booking enquiries responded to within 24 hours</div></div></div>
+      </div>
+    </div>
+    <div class="booking-form">
+      <div class="form-row2">
+        <div class="form-group"><label>Your Name</label><input type="text" id="bk-name" placeholder="Full name"></div>
+        <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="bk-phone" placeholder="+254 700 000 000"></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="bk-email" placeholder="you@email.com"></div>
+      <div class="form-row2">
+        <div class="form-group"><label>Event Type</label>
+          <select id="bk-type">
+            <option>Club Night</option><option>Festival / Concert</option>
+            <option>Private Party</option><option>Wedding</option>
+            <option>Corporate Event</option><option>Beach Party</option>
+            <option>Rooftop Session</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Event Date</label><input type="date" id="bk-date"></div>
+      </div>
+      <div class="form-row2">
+        <div class="form-group"><label>Venue Name</label><input type="text" id="bk-venue" placeholder="Venue or location"></div>
+        <div class="form-group"><label>City</label><input type="text" id="bk-city" placeholder="City"></div>
+      </div>
+      <div class="form-group"><label>Expected Crowd Size</label>
+        <select id="bk-crowd">
+          <option>Under 50</option><option>50 – 150</option>
+          <option>150 – 500</option><option>500 – 1,000</option><option>1,000+</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Message / Additional Details</label>
+        <textarea id="bk-msg" placeholder="Tell me about your event, preferred genres, set duration, any special requests…"></textarea>
+      </div>
+      <button class="submit-btn" onclick="submitBooking()">Send Booking Request →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">DJ <span>EDD</span>254</div>
+  <div class="footer-socials">
+    <a href="#" id="link-ig">Instagram</a>
+    <a href="#" id="link-tiktok">TikTok</a>
+    <a href="#" id="link-sc">SoundCloud</a>
+    <a href="#" id="link-yt">YouTube</a>
+  </div>
+  <div class="footer-copy">© 2026 DJ EDD254 · Mombasa, Kenya · All rights reserved</div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════
+   CURSOR
+══════════════════════════════════════ */
+const curDot = document.getElementById('cur');
+const curRing = document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function animCursor(){
+  curDot.style.left=mx+'px'; curDot.style.top=my+'px';
+  rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+  curRing.style.left=rx+'px'; curRing.style.top=ry+'px';
+  requestAnimationFrame(animCursor);
+})();
+
+/* ══════════════════════════════════════
+   NAV SCROLL
+══════════════════════════════════════ */
+window.addEventListener('scroll', ()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ══════════════════════════════════════
+   MOBILE MENU
+══════════════════════════════════════ */
+function toggleMenu(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+/* ══════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════ */
+const revealObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ══════════════════════════════════════
+   PHOTO UPLOAD (About)
+══════════════════════════════════════ */
+function uploadPhoto(e){
+  const file=e.target.files[0]; if(!file) return;
+  const url=URL.createObjectURL(file);
+  const box=document.getElementById('photoBox');
+  document.getElementById('photoPlaceholder').style.display='none';
+  let img=box.querySelector('img.uploaded');
+  if(!img){ img=document.createElement('img'); img.className='uploaded'; box.appendChild(img); }
+  img.src=url;
+  showToast('Photo uploaded!');
+}
+
+/* ══════════════════════════════════════
+   AUDIO ENGINE
+══════════════════════════════════════ */
+let tracks=[]; // {name, url, duration}
+let currentTrack=-1;
+let audioEl=new Audio();
+let isPlaying=false, isRepeat=false, isShuffle=false;
+
+audioEl.volume=0.8;
+
+audioEl.addEventListener('timeupdate',()=>{
+  if(!audioEl.duration) return;
+  const pct=(audioEl.currentTime/audioEl.duration)*100;
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressThumb').style.left=pct+'%';
+  document.getElementById('timeElapsed').textContent=fmtTime(audioEl.currentTime);
+});
+audioEl.addEventListener('loadedmetadata',()=>{
+  document.getElementById('timeDuration').textContent=fmtTime(audioEl.duration);
+  tracks[currentTrack].duration=fmtTime(audioEl.duration);
+  renderTrackList();
+});
+audioEl.addEventListener('ended',()=>{
+  if(isRepeat){ audioEl.currentTime=0; audioEl.play(); }
+  else nextTrack();
+});
+
+function fmtTime(s){
+  if(!s||isNaN(s)) return '0:00';
+  const m=Math.floor(s/60), sec=Math.floor(s%60);
+  return m+':'+(sec<10?'0':'')+sec;
+}
+
+function handleAudioFiles(e){ addAudioFiles(e.target.files); e.target.value=''; }
+function handleAudioDrop(e){
+  e.preventDefault(); handleDragLeave('audioDropZone');
+  addAudioFiles(e.dataTransfer.files);
+}
+
+function addAudioFiles(files){
+  let added=0;
+  Array.from(files).forEach(f=>{
+    if(!f.type.startsWith('audio/')) return;
+    const url=URL.createObjectURL(f);
+    const name=f.name.replace(/\.[^/.]+$/,'');
+    tracks.push({name,url,duration:'—',file:f});
+    added++;
+  });
+  if(added){ renderTrackList(); showToast(added+' track'+(added>1?'s':'')+' added!'); document.getElementById('audioEmpty').style.display='none'; }
+}
+
+function renderTrackList(){
+  const list=document.getElementById('trackList');
+  if(!tracks.length){
+    list.innerHTML='<div class="empty-state" id="audioEmpty"><div class="es-icon">🎧</div>Upload your first mix to get started</div>';
+    return;
+  }
+  list.innerHTML=tracks.map((t,i)=>{
+    const bars=Array.from({length:8},(_,j)=>`<div class="wv-b" style="height:${[30,60,80,50,70,40,90,55][j]}%;animation-delay:${(j*.07).toFixed(2)}s"></div>`).join('');
+    return `<div class="track-item${currentTrack===i?' playing':''}" id="ti-${i}" onclick="loadTrack(${i})">
+      <div class="track-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="wv">${bars}</div>
+      <div class="track-info">
+        <div class="track-title-t">${t.name}</div>
+        <div class="track-meta">DJ EDD254 · ${t.duration}</div>
+      </div>
+      <div class="track-dur">${t.duration}</div>
+      <button class="track-play-icon" onclick="event.stopPropagation();loadTrack(${i})">
+        ${currentTrack===i&&isPlaying?'⏸':'▶'}
+      </button>
+      <button class="track-del" onclick="event.stopPropagation();deleteTrack(${i})" title="Remove">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function loadTrack(i){
+  if(currentTrack===i && isPlaying){ togglePlay(); return; }
+  currentTrack=i;
+  audioEl.src=tracks[i].url;
+  audioEl.play();
+  isPlaying=true;
+  document.getElementById('playBtn').textContent='⏸';
+  document.getElementById('np-title').textContent=tracks[i].name;
+  document.getElementById('np-artist').textContent='DJ EDD254';
+  renderTrackList();
+}
+
+function togglePlay(){
+  if(!tracks.length){ showToast('Upload a track first!'); return; }
+  if(currentTrack<0) loadTrack(0);
+  else if(isPlaying){ audioEl.pause(); isPlaying=false; document.getElementById('playBtn').textContent='▶'; }
+  else { audioEl.play(); isPlaying=true; document.getElementById('playBtn').textContent='⏸'; }
+  renderTrackList();
+}
+
+function nextTrack(){
+  if(!tracks.length) return;
+  const next=isShuffle ? Math.floor(Math.random()*tracks.length) : (currentTrack+1)%tracks.length;
+  loadTrack(next);
+}
+function prevTrack(){
+  if(!tracks.length) return;
+  if(audioEl.currentTime>3){ audioEl.currentTime=0; return; }
+  const prev=(currentTrack-1+tracks.length)%tracks.length;
+  loadTrack(prev);
+}
+function toggleRepeat(){
+  isRepeat=!isRepeat;
+  document.getElementById('repeatBtn').style.color=isRepeat?'var(--orange)':'';
+  showToast(isRepeat?'Repeat ON':'Repeat OFF');
+}
+function shuffleTrack(){
+  isShuffle=!isShuffle;
+  showToast(isShuffle?'Shuffle ON':'Shuffle OFF');
+}
+function setVolume(v){ audioEl.volume=v; }
+function seekAudio(e){
+  if(!audioEl.duration) return;
+  const rect=document.getElementById('progressWrap').getBoundingClientRect();
+  const pct=(e.clientX-rect.left)/rect.width;
+  audioEl.currentTime=pct*audioEl.duration;
+}
+function deleteTrack(i){
+  if(currentTrack===i){ audioEl.pause(); audioEl.src=''; isPlaying=false; currentTrack=-1; document.getElementById('playBtn').textContent='▶'; document.getElementById('np-title').textContent='No Track Selected'; document.getElementById('np-artist').textContent='Upload a track to begin'; document.getElementById('progressFill').style.width='0%'; }
+  else if(currentTrack>i) currentTrack--;
+  URL.revokeObjectURL(tracks[i].url);
+  tracks.splice(i,1);
+  renderTrackList();
+  showToast('Track removed');
+}
+
+/* ══════════════════════════════════════
+   VIDEO ENGINE
+══════════════════════════════════════ */
+let videos=[]; // {name, url}
+function handleVideoFiles(e){ addVideoFiles(e.target.files); e.target.value=''; }
+function handleVideoDrop(e){
+  e.preventDefault(); handleDragLeave('videoDropZone');
+  addVideoFiles(e.dataTransfer.files);
+}
+function addVideoFiles(files){
+  let added=0;
+  Array.from(files).forEach(f=>{
+    if(!f.type.startsWith('video/')) return;
+    const url=URL.createObjectURL(f);
+    const name=f.name.replace(/\.[^/.]+$/,'');
+    videos.push({name,url});
+    added++;
+  });
+  if(added){ renderVideoGrid(); showToast(added+' video'+(added>1?'s':'')+' uploaded!'); document.getElementById('videoEmpty') && (document.getElementById('videoEmpty').style.display='none'); }
+}
+function renderVideoGrid(){
+  const grid=document.getElementById('videoGrid');
+  if(!videos.length){
+    grid.innerHTML='<div class="empty-state" id="videoEmpty" style="grid-column:1/-1"><div class="es-icon">🎬</div>Upload your first video to display it here</div>';
+    return;
+  }
+  grid.innerHTML=videos.map((v,i)=>`
+    <div class="video-card" id="vc-${i}">
+      <video src="${v.url}" preload="metadata" muted></video>
+      <div class="video-card-overlay">
+        <div class="vid-title">${v.name}</div>
+        <div class="vid-meta">DJ EDD254 · HD</div>
+      </div>
+      <button class="vid-play-btn" onclick="openLightbox(${i})">▶</button>
+      <button class="vid-del" onclick="deleteVideo(${i})">✕ Remove</button>
+    </div>`).join('');
+}
+function openLightbox(i){
+  document.getElementById('lb-video').src=videos[i].url;
+  document.getElementById('lightbox').classList.add('open');
+  document.getElementById('lb-video').play();
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lb-video').pause();
+  document.getElementById('lb-video').src='';
+}
+function deleteVideo(i){
+  URL.revokeObjectURL(videos[i].url);
+  videos.splice(i,1);
+  renderVideoGrid();
+  showToast('Video removed');
+}
+
+/* ══════════════════════════════════════
+   DRAG & DROP HELPERS
+══════════════════════════════════════ */
+function handleDragOver(e,id){ e.preventDefault(); document.getElementById(id).classList.add('drag'); }
+function handleDragLeave(id){ document.getElementById(id).classList.remove('drag'); }
+
+/* ══════════════════════════════════════
+   EVENTS DATA
+══════════════════════════════════════ */
+const eventsData=[
+  {day:'14',month:'Jun',name:'COAST RAVE VOL.3',venue:'Forty Thieves Beach Bar',city:'Mombasa'},
+  {day:'21',month:'Jun',name:'VIBES ONLY',venue:'Radisson Blu Nairobi',city:'Nairobi'},
+  {day:'05',month:'Jul',name:'FESTIVAL MAIN STAGE',venue:'Uhuru Gardens',city:'Nairobi'},
+  {day:'12',month:'Jul',name:'SUNSET SESSION',venue:'Neptune Beach Resort',city:'Mombasa'},
+  {day:'26',month:'Jul',name:'DIANI POOL PARTY',venue:'Diani Reef Hotel',city:'Diani'},
+  {day:'09',month:'Aug',name:'ROOFTOP TAKEOVER',venue:'The View Nairobi',city:'Nairobi'},
+];
+function buildEvents(){
+  document.getElementById('eventsList').innerHTML=eventsData.map(e=>`
+    <div class="event-row">
+      <div class="ev-date"><div class="ev-day">${e.day}</div><div class="ev-month">${e.month}</div></div>
+      <div><div class="ev-name">${e.name}</div><div class="ev-venue">${e.venue}</div></div>
+      <div class="ev-city">${e.city}</div>
+      <button class="ev-ticket" onclick="showToast('Tickets link coming soon!')">Get Tickets</button>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   GALLERY (PHOTO)
+══════════════════════════════════════ */
+const gallerySlots = ['gi1','gi2','gi3','gi4','gi5','gi6','gi7','gi8'];
+let galleryPhotos = new Array(8).fill(null);
+let galleryUploadSlot = null;
+
+function buildGalleryGrid(){
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = gallerySlots.map((cls, i) => `
+    <div class="gal-item ${cls} add-btn" id="gslot-${i}" onclick="triggerGallerySlot(${i})">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span style="font-size:10px">Add Photo</span>
+    </div>`).join('');
+}
+function triggerGallerySlot(i){
+  galleryUploadSlot=i;
+  document.getElementById('galleryInput').click();
+}
+function addGalleryPhotos(e){
+  const files=Array.from(e.target.files);
+  files.forEach((f,fi)=>{
+    const slot = galleryUploadSlot!=null ? galleryUploadSlot : fi;
+    if(slot>=8) return;
+    const url=URL.createObjectURL(f);
+    galleryPhotos[slot]=url;
+    const el=document.getElementById('gslot-'+slot);
+    if(el){
+      el.classList.remove('add-btn');
+      el.innerHTML=`<img src="${url}" alt="Gallery photo"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;background:rgba(0,0,0,.6)" class="gal-del-wrap"><button onclick="clearGallerySlot(${slot},event)" style="background:var(--orange);border:none;color:#000;padding:8px 16px;font-family:var(--font-b);font-size:10px;letter-spacing:2px;cursor:pointer;">✕ Remove</button></div>`;
+      el.onmouseenter=()=>el.querySelector('.gal-del-wrap').style.opacity='1';
+      el.onmouseleave=()=>el.querySelector('.gal-del-wrap').style.opacity='0';
+    }
+    galleryUploadSlot=null;
+  });
+  e.target.value='';
+  showToast('Photo added!');
+}
+function clearGallerySlot(i,e){
+  e.stopPropagation();
+  galleryPhotos[i]=null;
+  const el=document.getElementById('gslot-'+i);
+  el.className='gal-item '+gallerySlots[i]+' add-btn';
+  el.innerHTML=`<svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font-size:10px">Add Photo</span>`;
+  el.onclick=()=>triggerGallerySlot(i);
+  el.onmouseenter=null; el.onmouseleave=null;
+}
+
+/* ══════════════════════════════════════
+   BOOKING FORM
+══════════════════════════════════════ */
+function submitBooking(){
+  const name=document.getElementById('bk-name').value.trim();
+  const phone=document.getElementById('bk-phone').value.trim();
+  const email=document.getElementById('bk-email').value.trim();
+  if(!name){ showToast('Please enter your name'); return; }
+  if(!phone && !email){ showToast('Please enter phone or email'); return; }
+  const btn=document.querySelector('.submit-btn');
+  btn.textContent='✓ Request Sent!';
+  btn.style.background='var(--blue)';
+  showToast('Booking request sent! I will be in touch within 24hrs.');
+  setTimeout(()=>{ btn.textContent='Send Booking Request →'; btn.style.background=''; },4000);
+}
+
+/* ══════════════════════════════════════
+   VINYL PAUSE ON SCROLL
+══════════════════════════════════════ */
+const vinyl=document.querySelector('.vinyl');
+window.addEventListener('scroll',()=>{
+  vinyl.style.animationPlayState=window.scrollY>400?'paused':'running';
+});
+
+/* ══════════════════════════════════════
+   KEYBOARD SHORTCUTS
+══════════════════════════════════════ */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.code==='Space'){ e.preventDefault(); togglePlay(); }
+  if(e.code==='ArrowRight'){ nextTrack(); }
+  if(e.code==='ArrowLeft'){ prevTrack(); }
+  if(e.code==='Escape'){ closeLightbox(); }
+});
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+buildEvents();
+buildGalleryGrid();
+</script>
+</body>
+</html>
